@@ -18,12 +18,28 @@ window.fir = (function() {
       fir.extend(this, component);
     },
 
+    data: function(data) {
+      this._data = data;
+      return this;
+    },
+
+    methods: function(methods) {
+      Object.keys(methods).forEach(function(key) {
+        this[key] = methods[key];
+      }.bind(this));
+      return this;
+    },
+
     getData: function() {
       return this._data;
     },
 
     set: function(name, value) {
       this._data[name] = value;
+    },
+
+    get: function(name) {
+      return this._data[name];
     }
 
   };

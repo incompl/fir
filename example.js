@@ -1,15 +1,25 @@
-/* global fir */
+/* global fir,alert */
 
 (function() {
 
-  var contentElem = document.querySelector('#content');
+  var helloWorld = fir.entity(['DOM', 'EJS'])
+  .data({
+    title: 'Hello world button',
+    buttonMessage: 'Hello world!'
+  })
+  .methods({
+    hello: function() {
+      alert(this.get('buttonMessage'));
+    }
+  })
+  .dom({
+    className: 'fancy',
+    events: {
+      'click #click-me': 'hello'
+    }
+  })
+  .ejs({template: '#template-hello'});
 
-  var thing = fir.entity(['DOM', 'EJS'])
-  .dom({className: 'fancy'})
-  .ejs({template: '#template-thing'});
-
-  thing.set('title', 'Hello world!');
-
-  thing.render(contentElem);
+  helloWorld.render(document.querySelector('#content'));
 
 }());
