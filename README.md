@@ -15,3 +15,4 @@ You may call them mixins instead of components. I will allow this.
 
 * [backbone](http://backbonejs.org/)
 * [crafty](http://craftyjs.com/)
+* [boxbox](http://incompl.github.io/boxbox/)
