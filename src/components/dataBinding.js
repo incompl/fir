@@ -51,6 +51,7 @@ fir.component['dataBinding'] = (function() {
 
     _setupInputToData: function(config) {
 
+      // Attach events to html element on render
       this.on('render', function() {
         Object.keys(config).forEach(function(key) {
           var $elem = $(key);
@@ -59,6 +60,18 @@ fir.component['dataBinding'] = (function() {
             this.set(datum, $elem.val());
           }.bind(this));
           $elem.val(this.get(datum));
+        }.bind(this));
+      }.bind(this));
+
+      // Update html element on data change
+      this.on('change', function(changed) {
+        Object.keys(config).forEach(function(key) {
+          var datum = config[key];
+          var $elem;
+          if (changed[datum]) {
+            $elem = $(key);
+            $elem.val(changed[datum]);
+          }
         }.bind(this));
       }.bind(this));
 

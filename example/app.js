@@ -2,7 +2,9 @@
 
 (function() {
 
-  var helloWorld = fir.entity(HelloWorld, {rating:8});
+  var helloWorld = fir.entity(HelloWorld, {id: 1});
+
+  helloWorld.load();
 
   helloWorld.render($('#content'));
 

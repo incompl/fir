@@ -2,28 +2,24 @@
 <html>
   <head>
     <title>Example Application</title>
-
     <link rel='stylesheet' href='screen.css'>
-
     <script src='../src/lib/underscore-min.js'></script>
     <script src='../src/lib/jquery-2.0.3.min.js'></script>
     <script src='../src/fir.js'></script>
     <script src='../src/components/dom.js'></script>
     <script src='../src/components/ejs.js'></script>
     <script src='../src/components/dataBinding.js'></script>
+    <script src='../src/components/localStorage.js'></script>
     <script src='HelloWorld.js'></script>
 
     <script id='template-hello' type='template/ejs'>
       <h2><%= title %></h2>
-      <p>Does not actually submit any data.</p>
-      
+      <p>Persist your changes in local storage as you change it. Try refreshing!</p>
       <label for='rating-slider'>Rate this app:</label>
-      
       <input id='rating-slider' type='range' min='1' max='10'><span id='rating'></span>
-
       <div>
         <br>
-        <button id='click-me'>Submit rating</button>
+        <button id='click-me'>Alert rating</button>
       </div>
     </script>
 

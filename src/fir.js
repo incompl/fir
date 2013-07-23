@@ -27,8 +27,9 @@ window.fir = (function() {
       }.bind(this));
     },
 
-    addComponent: function(component, config) {
-      this._components.push(component);
+    addComponent: function(componentName, config) {
+      var component = fir.component[componentName];
+      this._components.push(componentName);
       fir.extend(this, component, true);
       if (component.init) {
         this.init(config);
@@ -39,21 +40,30 @@ window.fir = (function() {
       return this._data;
     },
 
-    set: function(name, value) {
+    setData: function(data, trigger) {
+      if (trigger === undefined) {
+        trigger = true;
+      }
+      fir.extend(this._data, data, true);
+      if (trigger) {
+        this.trigger('change', data, trigger);
+      }
+    },
+
+    set: function(name, value, trigger) {
+      if (trigger === undefined) {
+        trigger = true;
+      }
       this._data[name] = value;
       var eventArg = {};
       eventArg[name] = value;
-      this.trigger('change', eventArg);
+      if (trigger) {
+        this.trigger('change', eventArg);
+      }
     },
 
     get: function(name) {
       return this._data[name];
-    },
-
-    setAll: function(obj) {
-      Object.keys(obj).forEach(function(key) {
-        this.set(key, obj[key]);
-      }.bind(this));
     },
 
     on: function(type, fun) {
@@ -116,10 +126,10 @@ window.fir = (function() {
     var newEntity = fir.inherit(Entity);
     newEntity._setup();
     Object.keys(configs).forEach(function(key) {
-      var component = this.component[key];
       var config = configs[key];
       if (key === 'data') {
         fir.extend(data, config);
+        newEntity.setData(data, false);
       }
       else if (key === 'methods') {
         newEntity._methods(config);
@@ -127,14 +137,16 @@ window.fir = (function() {
       else if (key === 'events') {
         newEntity._addEvents(config);
       }
-      else if (component !== undefined) {
-        newEntity.addComponent(component, config);
+      else if (key === 'init') {
+        config.call(newEntity);
+      }
+      else if (this.component[key] !== undefined) {
+        newEntity.addComponent(key, config);
       }
       else {
         console.error('Unknown component: ' + key);
       }
     }.bind(this));
-    newEntity.setAll(data);
     return newEntity;
   };
 
