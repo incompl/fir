@@ -1,10 +1,10 @@
 /* global fir,_ */
 
-fir.component['EJS'] = (function() {
+fir.component['ejs'] = (function() {
 
   return {
 
-    ejs: function(config) {
+    init: function(config) {
       var templateStr;
       var templateElem;
       if (config.template instanceof HTMLElement) {
@@ -22,8 +22,14 @@ fir.component['EJS'] = (function() {
       var html = this._ejsCompiled(this.getData());
       this.el.innerHTML = html;
       if (parent !== undefined) {
-        parent.appendChild(this.el);
+        if (parent instanceof jQuery) {
+          parent.append(this.el);
+        }
+        else {
+          parent.appendChild(this.el);
+        }
       }
+      this.trigger('render');
       return this.el;
     }
 

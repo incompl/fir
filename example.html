@@ -1,28 +1,38 @@
 <!doctype html>
 <html>
   <head>
-    <title>fir example</title>
+    <title>Example Application</title>
 
     <link rel='stylesheet' href='example.css'>
 
     <script src='src/lib/underscore-min.js'></script>
     <script src='src/lib/jquery-2.0.3.min.js'></script>
     <script src='src/fir.js'></script>
-    <script src='src/components/DOM.js'></script>
-    <script src='src/components/EJS.js'></script>
+    <script src='src/components/dom.js'></script>
+    <script src='src/components/ejs.js'></script>
+    <script src='src/components/dataBinding.js'></script>
+    <script src='example-helloWorld.js'></script>
 
     <script id='template-hello' type='template/ejs'>
       <h2><%= title %></h2>
-      <p>This is an example application.</p>
-      <button id='click-me'>Click me!</button>
+      <p>Does not actually submit any data.</p>
+      
+      <label for='rating-slider'>Rate this app:</label>
+      
+      <input id='rating-slider' type='range' min='1' max='10'><span id='rating'></span>
+
+      <div>
+        <br>
+        <button id='click-me'>Submit rating</button>
+      </div>
     </script>
 
   </head>
 
   <body>
-    <h1>fir example</h1>
+    <h1>Example Application</h1>
     <div id='content'></div>
-    <script src='example.js'></script>
+    <script src='example-app.js'></script>
   </body>
 
 </html>

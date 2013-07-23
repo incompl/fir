@@ -1,4 +1,5 @@
-/* global window */
+/* jshint devel:true */
+/* global _ */
 
 window.fir = (function() {
 
@@ -11,23 +12,27 @@ window.fir = (function() {
     _setup: function() {
       this._components = [];
       this._data = {};
+      this._subscribers = {};
     },
 
-    addComponent: function(component) {
-      this._components.push(component);
-      fir.extend(this, component);
-    },
-
-    data: function(data) {
-      this._data = data;
-      return this;
-    },
-
-    methods: function(methods) {
+    _methods: function(methods) {
       Object.keys(methods).forEach(function(key) {
         this[key] = methods[key];
       }.bind(this));
-      return this;
+    },
+
+    _addEvents: function(events) {
+       Object.keys(events).forEach(function(key) {
+        this.on(key, events[key]);
+      }.bind(this));
+    },
+
+    addComponent: function(component, config) {
+      this._components.push(component);
+      fir.extend(this, component, true);
+      if (component.init) {
+        this.init(config);
+      }
     },
 
     getData: function() {
@@ -36,21 +41,53 @@ window.fir = (function() {
 
     set: function(name, value) {
       this._data[name] = value;
+      var eventArg = {};
+      eventArg[name] = value;
+      this.trigger('change', eventArg);
     },
 
     get: function(name) {
       return this._data[name];
+    },
+
+    setAll: function(obj) {
+      Object.keys(obj).forEach(function(key) {
+        this.set(key, obj[key]);
+      }.bind(this));
+    },
+
+    on: function(type, fun) {
+      if (this._subscribers[type] === undefined) {
+        this._subscribers[type] = [];
+      }
+      this._subscribers[type].push(fun);
+    },
+
+    off: function(type, fun) {
+      this._subscribers[type] =
+        _(this._subscribers[type]).without(fun);
+    },
+
+    trigger: function(type, arg) {
+      if (this._subscribers[type] !== undefined) {
+        this._subscribers[type].forEach(function(fun) {
+          fun.call(this, arg);
+        }.bind(this));
+      }
     }
 
   };
 
-  fir.extend = function(target, o) {
+  fir.extend = function(target, o, overwrite) {
     if (target === undefined) {
       target = {};
     }
+    if (overwrite === undefined) {
+      overwrite = false;
+    }
     if (o !== undefined) {
       for (var key in o) {
-        if (o.hasOwnProperty(key)) { // && target[key] === undefined) {
+        if (o.hasOwnProperty(key) && (overwrite || target[key] === undefined)) {
           target[key] = o[key];
         }
       }
@@ -72,16 +109,32 @@ window.fir = (function() {
     return result;
   };
 
-  fir.entity = function(components) {
+  fir.entity = function(configs, data) {
+    if (data === undefined) {
+      data = {};
+    }
     var newEntity = fir.inherit(Entity);
     newEntity._setup();
-    components.forEach(function(componentStr) {
-      var component = this.component[componentStr];
-      newEntity.addComponent(component);
-      if (component.init) {
-        newEntity.init();
+    Object.keys(configs).forEach(function(key) {
+      var component = this.component[key];
+      var config = configs[key];
+      if (key === 'data') {
+        fir.extend(data, config);
+      }
+      else if (key === 'methods') {
+        newEntity._methods(config);
+      }
+      else if (key === 'events') {
+        newEntity._addEvents(config);
+      }
+      else if (component !== undefined) {
+        newEntity.addComponent(component, config);
+      }
+      else {
+        console.error('Unknown component: ' + key);
       }
     }.bind(this));
+    newEntity.setAll(data);
     return newEntity;
   };
 

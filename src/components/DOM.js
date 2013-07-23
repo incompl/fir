@@ -1,21 +1,18 @@
 /* global fir,console,$ */
 
-fir.component['DOM'] = (function() {
+fir.component['dom'] = (function() {
 
   return {
 
-    init: function() {
+    init: function(config) {
       this.el = document.createElement('div');
       this.$el = $(this.el);
-    },
-
-    dom: function(config) {
       if (config.className) {
         this.el.classList.add(config.className);
       }
-      if (config.events) {
-        Object.keys(config.events).forEach(function(key) {
-          this.domBind(key, config.events[key]);
+      if (config.domEvents) {
+        Object.keys(config.domEvents).forEach(function(key) {
+          this.domBind(key, config.domEvents[key]);
         }.bind(this));
       }
       return this;
