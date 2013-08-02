@@ -42,7 +42,12 @@ fir.component['dom'] = (function() {
     },
 
     appendTo: function(parent) {
-      parent.appendChild(this.el);
+      if (parent instanceof $) {
+        parent.append(this.$el);
+      }
+      else {
+        parent.appendChild(this.el);
+      }
     }
 
   };

@@ -1,0 +1,20 @@
+#content {
+  background: #ddd;
+  width: 800px;
+  height: 600px;
+  overflow: hidden;
+}
+
+.player {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: blue;
+}
+
+.ground {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: red;
+}

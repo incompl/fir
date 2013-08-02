@@ -120,16 +120,18 @@ window.fir = (function() {
   };
 
   fir.entity = function(configs, data) {
-    if (data === undefined) {
-      data = {};
-    }
     var newEntity = fir.inherit(Entity);
     newEntity._setup();
+    if (data !== undefined) {
+      newEntity.setData(data);
+    }
     Object.keys(configs).forEach(function(key) {
       var config = configs[key];
+      var newEntityData;
       if (key === 'data') {
-        fir.extend(data, config);
-        newEntity.setData(data, false);
+        newEntityData = newEntity.getData();
+        fir.extend(newEntityData, config);
+        newEntity.setData(newEntityData, false);
       }
       else if (key === 'methods') {
         newEntity._methods(config);

@@ -11,6 +11,10 @@ fir.component['dataBinding'] = (function() {
 
     _setupDataToElement: function(config) {
 
+      if (config === undefined) {
+        return;
+      }
+
       // Cache jQuery objects from selectors
       var cached = {};
       Object.keys(config).forEach(function(key) {
@@ -33,7 +37,7 @@ fir.component['dataBinding'] = (function() {
       }.bind(this));
 
       // Update DOM events when entity renders
-      this.on('render', function() {
+      function onRender() {
         Object.keys(this.getData()).forEach(function(datum) {
           var $elem = cached[datum];
           var value = this.get(datum);
@@ -45,11 +49,17 @@ fir.component['dataBinding'] = (function() {
             $elem.text(value);
           }
         }.bind(this));
-      }.bind(this));
+      }
+      this.on('render', onRender.bind(this));
+      onRender.call(this)
 
     },
 
     _setupInputToData: function(config) {
+
+      if (config === undefined) {
+        return;
+      }
 
       // Attach events to html element on render
       this.on('render', function() {
