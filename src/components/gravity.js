@@ -15,17 +15,36 @@ fir.component['gravity'] = (function() {
     },
 
     _gravityTick: function() {
-      var y = this.get('y');
-      var accelUp = this.get('accelUp');
-      if (this.intersects()) {
-        accelUp = 0;
-        this.set('y', 460); // TODO
+      var intersects = this.intersects('.ground');
+      if (intersects.length > 0) {
+        intersects.forEach(function(other) {
+          var center = this.center();
+          var otherCenter = other.center();
+          var yDiffGreater = Math.abs(center.y - otherCenter.y) >
+                             Math.abs(center.x - otherCenter.x);
+          if (yDiffGreater && center.y > otherCenter.y) {
+            this.set('y', other.get('y') + other.get('h'));
+          }
+          else if (yDiffGreater) {
+            this.set('y', other.get('y') - this.get('h'));
+          }
+          else if (center.x > otherCenter.x) {
+            this.set('x',  other.get('x') + other.get('w'));
+            this.set('accelUp', this.get('accelUp') - .1);
+          }
+          else {
+            this.set('x', other.get('x') - this.get('w'));
+            this.set('accelUp', this.get('accelUp') - .1);
+          }
+        }.bind(this));
       }
       else {
-        accelUp -= .1;
-        this.set('y', y - accelUp * this.get('mass'));
+        this.set('accelUp', this.get('accelUp') - .1);
       }
-      this.set('accelUp', accelUp);
+    },
+
+    jump: function(power) {
+      this.set('accelUp', power);
     }
 
   };

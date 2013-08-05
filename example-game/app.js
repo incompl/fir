@@ -12,8 +12,9 @@
   // create game entities
   var gameEntities = [];
   gameEntities.push(fir.entity(Player, {x: 100, y: 100}));
-  gameEntities.push(fir.entity(Ground, {x: 100, y: 500}));
-  gameEntities.push(fir.entity(Ground, {x: 500, y: 550}));
+  gameEntities.push(fir.entity(Ground, {x: 100, y: 300}));
+  gameEntities.push(fir.entity(Ground, {x: 140, y: 260}));
+  gameEntities.push(fir.entity(Ground, {x: 400, y: 300}));
 
   // game loop
   setInterval(function() {
