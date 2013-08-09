@@ -40,7 +40,7 @@ fir.component['gameEntity'] = (function() {
         if (this.get('y') + this.get('h') >= entity.get('y') &&
             this.get('y') <= entity.get('y') + entity.get('h') &&
             this.get('x') + this.get('w')  > entity.get('x') &&
-            this.get('x') < entity.get('x') + this.get('w') ) {
+            this.get('x') < entity.get('x') + entity.get('w') ) {
           results.push(entity);
         }
       }.bind(this));
