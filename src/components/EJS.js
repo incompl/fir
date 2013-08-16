@@ -1,4 +1,4 @@
-/* global fir,_ */
+/* global fir,_,$ */
 
 fir.component['ejs'] = (function() {
 
@@ -19,10 +19,10 @@ fir.component['ejs'] = (function() {
     },
 
     render: function(parent) {
-      var html = this._ejsCompiled(this.getData());
+      var html = this._ejsCompiled(this.data);
       this.el.innerHTML = html;
       if (parent !== undefined) {
-        if (parent instanceof jQuery) {
+        if (parent instanceof $) {
           parent.append(this.el);
         }
         else {

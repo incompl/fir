@@ -2,53 +2,80 @@
 
 fir.component['gravity'] = (function() {
 
+  function gravityTick() {
+    var intersects = this.intersects('.ground');
+    if (intersects.length > 0) {
+      intersects.forEach(function(other) {
+        var center = this.center();
+        var otherCenter = other.center();
+
+        var thisTop = this.get('y');
+        var thisBottom = this.get('y') + this.get('h');
+        var thisLeft = this.get('x');
+        var thisRight = this.get('x') + this.get('w');
+
+        var otherTop = other.get('y');
+        var otherBottom = other.get('y') + other.get('h');
+        var otherLeft = other.get('x');
+        var otherRight = other.get('x') + other.get('w');
+
+        var overlapY = null;
+        var overlapX = null;
+
+        if (thisBottom >= otherTop && thisTop < otherTop) {
+          overlapY = thisBottom - otherTop;
+        }
+        else if (thisTop <= otherBottom && thisBottom > otherBottom) {
+          overlapY = otherBottom - thisTop;
+        }
+
+        if (thisRight > otherLeft && thisLeft < otherLeft) {
+          overlapX = thisRight - otherLeft;
+        }
+        else if (thisLeft < otherRight && thisRight > otherRight) {
+          overlapX = otherRight - thisLeft;
+        }
+
+        if (overlapY === 0 && overlapX === 0) {
+          return;
+        }
+
+        var adjustY = overlapY !== null && (overlapY <= overlapX || overlapX === null);
+
+        if (adjustY && thisTop < otherTop) {
+          this.set('y', other.get('y') - this.get('h'));
+          if (this.get('accelUp') < -.1) {
+            this.set('accelUp', -.1);
+          }
+        }
+        else if (adjustY) {
+          this.set('y', other.get('y') + other.get('h'));
+          if (this.get('accelUp') > -.1) {
+            this.set('accelUp', -.1);
+          }
+        }
+
+        else if (thisLeft < otherLeft) {
+          this.set('x', other.get('x') - this.get('w'));
+          this.set('accelUp', this.get('accelUp') - .1);
+        }
+        else {
+          this.set('x', other.get('x') + other.get('w'));
+          this.set('accelUp', this.get('accelUp') - .1);
+        }
+
+      }.bind(this));
+    }
+    else {
+      this.set('accelUp', this.get('accelUp') - .1);
+    }
+  }
+
   return {
 
     init: function(config) {
-      this._config = config;
-      this.set('accelUp', 0);
-      this.set('mass', 5);
-
-      this.on('tick', function() {
-        this._gravityTick();
-      }.bind(this));
-    },
-
-    _gravityTick: function() {
-      var intersects = this.intersects('.ground');
-      if (intersects.length > 0) {
-        intersects.forEach(function(other) {
-          var center = this.center();
-          var otherCenter = other.center();
-
-          var adjustY = center.y < other.get('y') ||
-                        center.y > other.get('y') + other.get('h') ||
-                        (center.x > other.get('x') &&
-                         center.x < other.get('x') + other.get('w'));
-
-          if (adjustY && center.y < otherCenter.y) {
-            this.set('y', other.get('y') - this.get('h'));
-            this.set('accelUp', 0);
-          }
-          else if (adjustY) {
-            this.set('y', other.get('y') + other.get('h'));
-            this.set('accelUp', -.1);
-          }
-
-          else if (center.x < otherCenter.x) {
-            this.set('x', other.get('x') - this.get('w'));
-            this.set('accelUp', this.get('accelUp') - .1);
-          }
-          else {
-            this.set('x', other.get('x') + other.get('w'));
-            this.set('accelUp', this.get('accelUp') - .1);
-          }
-
-        }.bind(this));
-      }
-      else {
-        this.set('accelUp', this.get('accelUp') - .1);
-      }
+      this.set('accelUp', config.accelUp || 0);
+      this.on('tick', gravityTick.bind(this));
     },
 
     jump: function(power) {

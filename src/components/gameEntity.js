@@ -14,7 +14,7 @@ fir.component['gameEntity'] = (function() {
       this.set('w', this.get('w') || 40);
       this.set('accelUp', 0);
       this.set('accelLeft', 0);
-      this.set('mass', this.get('mass') || 1);
+      this.set('mass', this.get('mass') || 5);
       entities.push(this);
     },
 

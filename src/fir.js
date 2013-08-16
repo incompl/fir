@@ -36,18 +36,13 @@ window.fir = (function() {
       }
     },
 
-    getData: function() {
+    get data() {
       return this._data;
     },
 
-    setData: function(data, trigger) {
-      if (trigger === undefined) {
-        trigger = true;
-      }
+    set data(data) {
       fir.extend(this._data, data, true);
-      if (trigger) {
-        this.trigger('change', data, trigger);
-      }
+      this.trigger('change', data);
     },
 
     set: function(name, value, trigger) {
@@ -107,31 +102,23 @@ window.fir = (function() {
 
   fir.inherit = function(o) {
     function F() {}
-    F.prototype = this;
-    var result = new F();
-    if (o) {
-      for (var key in o) {
-        if (o.hasOwnProperty(key)) {
-          result[key] = o[key];
-        }
-      }
-    }
-    return result;
+    F.prototype = o;
+    return new F();
   };
 
   fir.entity = function(configs, data) {
     var newEntity = fir.inherit(Entity);
     newEntity._setup();
     if (data !== undefined) {
-      newEntity.setData(data);
+      newEntity.data = data;
     }
     Object.keys(configs).forEach(function(key) {
       var config = configs[key];
       var newEntityData;
       if (key === 'data') {
-        newEntityData = newEntity.getData();
+        newEntityData = newEntity.data;
         fir.extend(newEntityData, config);
-        newEntity.setData(newEntityData, false);
+        fir.extend(newEntity._data, newEntityData, true);
       }
       else if (key === 'methods') {
         newEntity._methods(config);

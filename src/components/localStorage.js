@@ -32,7 +32,7 @@ fir.component['localStorage'] = (function() {
     load: function() {
       var jsonStr = localStorage.getItem(this.get('id'));
       if (jsonStr !== null) {
-        this.setData(JSON.parse(jsonStr));
+        this.data = JSON.parse(jsonStr);
       }
     }
 

@@ -9,28 +9,6 @@ var Player = {
     maxSpeed: 1
   },
 
-  events: {
-
-    'tick': function() {
-      if (this.get('movingRight') === true) {
-        this.set('accelLeft', this.get('accelLeft') - this.get('speed'));
-      }
-      else if (this.get('movingLeft') === true) {
-        this.set('accelLeft', this.get('accelLeft') + this.get('speed'));
-      }
-      else {
-        this.set('accelLeft', Math.round(this.get('accelLeft') / 3));
-      }
-      if (this.get('accelLeft') > this.get('maxSpeed')) {
-        this.set('accelLeft', this.get('maxSpeed'));
-      }
-      if (Math.abs(0 - this.get('accelLeft')) > this.get('maxSpeed')) {
-        this.set('accelLeft', 0 - this.get('maxSpeed'));
-      }
-    }
-
-  },
-
   dom: {
     className: 'player'
   },
@@ -54,9 +32,11 @@ var Player = {
 
     keydown: function(e) {
       if (e.keyCode === 37) {
+        this.set('movingRight', false);
         this.set('movingLeft', true);
       }
       else if (e.keyCode === 39) {
+        this.set('movingLeft', false);
         this.set('movingRight', true);
       }
       else if (e.keyCode === 32) {
@@ -70,6 +50,28 @@ var Player = {
       }
       else if (e.keyCode === 39) {
         this.set('movingRight', false);
+      }
+    }
+
+  },
+
+  events: {
+
+    'tick': function() {
+      if (this.get('movingRight') === true) {
+        this.set('accelLeft', this.get('accelLeft') - this.get('speed'));
+      }
+      else if (this.get('movingLeft') === true) {
+        this.set('accelLeft', this.get('accelLeft') + this.get('speed'));
+      }
+      else {
+        this.set('accelLeft', Math.round(this.get('accelLeft') / 3));
+      }
+      if (this.get('accelLeft') > this.get('maxSpeed')) {
+        this.set('accelLeft', this.get('maxSpeed'));
+      }
+      if (Math.abs(0 - this.get('accelLeft')) > this.get('maxSpeed')) {
+        this.set('accelLeft', 0 - this.get('maxSpeed'));
       }
     }
 
