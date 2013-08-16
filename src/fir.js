@@ -10,6 +10,7 @@ window.fir = (function() {
   var Entity = {
 
     _setup: function() {
+      this.destroyed = false;
       this._components = [];
       this._data = {};
       this._subscribers = {};
@@ -33,6 +34,11 @@ window.fir = (function() {
       fir.extend(this, component, true);
       if (component.init) {
         this.init(config);
+        delete this.init;
+      }
+      if (component.destroy) {
+        this.on('destroy', this.destroy);
+        delete this.destroy;
       }
     },
 
@@ -79,6 +85,12 @@ window.fir = (function() {
           fun.call(this, arg);
         }.bind(this));
       }
+    },
+
+    destroy: function() {
+      this.trigger('destroy');
+      delete this._subscribers;
+      this.destroyed = true;
     }
 
   };
@@ -128,6 +140,9 @@ window.fir = (function() {
       }
       else if (key === 'init') {
         config.call(newEntity);
+      }
+      else if (key === 'destroy') {
+        newEntity.on('destroy', config);
       }
       else if (this.component[key] !== undefined) {
         newEntity.addComponent(key, config);

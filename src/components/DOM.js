@@ -2,6 +2,10 @@
 
 fir.component['dom'] = (function() {
 
+  function onDestroy() {
+    this.$el.remove();
+  }
+
   return {
 
     init: function(config) {
@@ -15,6 +19,7 @@ fir.component['dom'] = (function() {
           this.domBind(key, config.domEvents[key]);
         }.bind(this));
       }
+      this.on('destroy', onDestroy.bind(this));
       return this;
     },
 

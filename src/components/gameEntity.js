@@ -4,11 +4,15 @@ fir.component['gameEntity'] = (function() {
 
   var entities = [];
 
+  function onDestroy() {
+    entities = _(entities).without(this);
+  }
+
   return {
 
     init: function(config) {
       $(function() {
-        $(config.container).append(this.$el);
+        $(this.stage.el).append(this.$el);
       }.bind(this));
       this.set('h', this.get('h') || 40);
       this.set('w', this.get('w') || 40);
@@ -16,6 +20,7 @@ fir.component['gameEntity'] = (function() {
       this.set('accelLeft', 0);
       this.set('mass', this.get('mass') || 5);
       entities.push(this);
+      this.on('destroy', onDestroy.bind(this));
     },
 
     tick: function() {
@@ -24,11 +29,14 @@ fir.component['gameEntity'] = (function() {
       this.trigger('tick');
     },
 
-    render: function() {
-      this.$el.css('left', this.get('x') + 'px');
-      this.$el.css('top', this.get('y') + 'px');
-      this.$el.css('width', this.get('w') + 'px');
-      this.$el.css('height', this.get('h') + 'px');
+    render: function(zoom, cameraX, cameraY) {
+      var x = Math.round(this.get('x') * zoom - cameraX);
+      var y = Math.round(this.get('y')* zoom - cameraY);
+      this.$el.css('transform', 'translate3d(' + x + 'px, ' +
+                                                 y + 'px, ' +
+                                                 '0)');
+      this.$el.css('width', Math.round(this.get('w') * zoom) + 'px');
+      this.$el.css('height', Math.round(this.get('h') * zoom) + 'px');
     },
 
     intersects: function(selector) {

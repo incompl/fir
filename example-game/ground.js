@@ -6,8 +6,8 @@ var Ground = {
     className: 'ground'
   },
 
-  gameEntity: {
-    container: '#content'
-  }
+  gameEntity: {},
+
+  draggable: {}
 
 };

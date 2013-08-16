@@ -1,4 +1,4 @@
-/* global fir,$ */
+/* global fir,$,_ */
 
 fir.component['dataBinding'] = (function() {
 
@@ -27,7 +27,7 @@ fir.component['dataBinding'] = (function() {
           $elem.text(newValue);
         }
       }.bind(this));
-    }.bind(this));
+    });
 
     // Update DOM events when entity renders
     function onRender() {
@@ -44,7 +44,7 @@ fir.component['dataBinding'] = (function() {
       }.bind(this));
     }
     this.on('render', onRender.bind(this));
-    onRender.call(this)
+    onRender.call(this);
 
   }
 

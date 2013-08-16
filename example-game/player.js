@@ -9,13 +9,15 @@ var Player = {
     maxSpeed: 1
   },
 
+  destroy: function() {
+    $('#hud').text('game over');
+  },
+
   dom: {
     className: 'player'
   },
 
-  gameEntity: {
-    container: '#content'
-  },
+  gameEntity: {},
 
   gravity: {
     ground: '.ground'
@@ -58,6 +60,8 @@ var Player = {
   events: {
 
     'tick': function() {
+
+      // Keyboard movement
       if (this.get('movingRight') === true) {
         this.set('accelLeft', this.get('accelLeft') - this.get('speed'));
       }
@@ -73,6 +77,15 @@ var Player = {
       if (Math.abs(0 - this.get('accelLeft')) > this.get('maxSpeed')) {
         this.set('accelLeft', 0 - this.get('maxSpeed'));
       }
+
+      // Fell off the stage
+      if (this.get('y') > 1000) {
+        this.destroy();
+      }
+
+      // Camera follows player
+      this.stage.set('cameraX', Math.round(this.get('x') * this.stage.get('zoom') - window.innerWidth / 2));
+      this.stage.set('cameraY', Math.round(this.get('y') * this.stage.get('zoom') - window.innerHeight / 2));
     }
 
   }
